@@ -58,8 +58,6 @@ Created on: 2024-10-07 12:19:39
 
 ### High-Level System Architecture
 
-)
-Copy
 
 ### Project Milestones
 
