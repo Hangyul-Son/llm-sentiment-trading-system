@@ -4,3 +4,4 @@ update_research_summary.py
 *.pyc
 venv/
 .env
+.ipynb_checkpoints/
