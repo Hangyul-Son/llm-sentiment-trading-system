@@ -1,3 +1,6 @@
+__pycache__/
 research_organizer.py
 update_research_summary.py
 *.pyc
+venv/
+.env
