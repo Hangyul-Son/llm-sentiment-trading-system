@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import json
 import pandas as pd
 import requests
+import streamlit as st
 
 # Load environment variables from .env file
 load_dotenv()
@@ -19,11 +20,11 @@ SUBREDDITS = ["HongKong", "stocks", "investing", "finance"]
 num_data_per_source = 2
 
 reddit = praw.Reddit(
-    client_id=os.getenv("REDDIT_CLIENT_ID"),
-    client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
-    password=os.getenv("REDDIT_PASSWORD"),  # Replace with your Reddit account password
-    user_agent=os.getenv("REDDIT_USER_AGENT"),
-    username=os.getenv("REDDIT_USERNAME")
+    client_id=st.secrets["REDDIT_CLIENT_ID"],
+    client_secret=st.secrets["REDDIT_CLIENT_SECRET"],
+    # password=st.secrets["REDDIT_PASSWORD"],  # Replace with your Reddit account password
+    user_agent=st.secrets["REDDIT_USER_AGENT"],
+    # username=st.secrets["REDDIT_USERNAME"]
 )
 
 # Verify Reddit instance is connected
