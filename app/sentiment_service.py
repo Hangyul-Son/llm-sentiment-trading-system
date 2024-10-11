@@ -8,7 +8,7 @@ client = openai.OpenAI(
 
 # Main function to analyze sentiment using different agents
 def analyze_sentiment(content):
-    print("Starting sentiment analysis for content.")
+    print(f"Starting sentiment analysis for '''{content}'''\n\n")
     agent_functions = [
         mood_agent,
         institutional_investor_agent,
@@ -47,7 +47,7 @@ def summative_agent(responses, max_rounds=2):
     if not consensus_reached:
         final_sentiment = get_high_priority_sentiment(sentiment_summary, high_priority_agents)
 
-    print(f"Final sentiment determined: {final_sentiment}")
+    print(f"Final sentiment determined: {refine_final_sentiment(final_sentiment)}\n\n")
     return final_sentiment, sentiment_summary
 
 # Helper function to combine responses from all agents
@@ -60,7 +60,7 @@ def get_overall_sentiment(combined_responses):
         response = client.chat.completions.create(
             model="gpt-4-turbo",
             messages=[
-                {"role": "user", "content": f"Based on the following responses from various agents, summarize the overall sentiment as Positive, Negative, Neutral, or Mixed:  \n\n{combined_responses} \n The overall sentiment 'MUST' be a single word. Your response should be a single word and that is final."}
+                {"role": "user", "content": f"Based on the following responses from various agents, summarize the overall sentiment as Positive, Negative, Neutral, or Mixed:  \n\n{combined_responses} \n The overall sentiment 'MUST' be a single word from Positive, Negative, Neutral, or Mixed. Your response should be a single word and that is final."}
             ]
         )
         return response.choices[0].message.content.strip().lower()
@@ -80,7 +80,6 @@ def refine_agent_responses(sentiment_summary, combined_responses):
                 ]
             )
             refined_summary[agent] = refined_response.choices[0].message.content
-            print(f"Refined response from {agent}: {refined_summary[agent]}")
         except Exception as e:
             print(f"Error refining response for {agent}: {str(e)}")
             refined_summary[agent] = "Error in refining response"
@@ -95,13 +94,66 @@ def get_high_priority_sentiment(sentiment_summary, high_priority_agents):
         final_response = client.chat.completions.create(
             model="gpt-4-turbo",
             messages=[
-                {"role": "user", "content": f"Summarize the final sentiment based on high-priority agents alone:\n{high_priority_responses}"}
+                {"role": "user", "content": f"Summarize the final sentiment based on high-priority agents alone:\n{high_priority_responses}\n The overall sentiment 'MUST' be a single word from Positive, Negative, Neutral, or Mixed. Your response should be a single word and that is final."}
             ]
         )
         return final_response.choices[0].message.content.strip().capitalize()
     except Exception as e:
         print(f"Error summarizing final sentiment with high-priority agents: {str(e)}")
         return "Error in final consensus"
+
+import re
+
+def refine_final_sentiment(sentiment):
+    # Normalize to lowercase and strip extra whitespace
+    sentiment = sentiment.strip().lower()
+
+    # Common sentiment categories and variants, including misspellings and phrasing variations
+    positive_variants = [
+        "positive", "very positive", "mostly positive", "slightly positive", 
+        "somewhat positive", "quite positive", "positive trend", "upward trend", 
+        "bullish", "optimistic", "growing confidence", "positve", "posiitve", "positiv"
+    ]
+    
+    negative_variants = [
+        "negative", "very negative", "mostly negative", "slightly negative",
+        "somewhat negative", "quite negative", "negative trend", "downward trend", 
+        "bearish", "pessimistic", "declining confidence", "negitive", "negitive trend", 
+        "negetive", "downward treand", "pessimisstic", "pessimistic trend"
+    ]
+    
+    neutral_variants = [
+        "neutral", "balanced", "no opinion", "neutral outlook", "stable", "unchanged", 
+        "flat", "no strong opinion", "indifferent", "neutral stance", "nutral", 
+        "neutrel", "balnced", "no opnion", "no opinnion"
+    ]
+    
+    mixed_variants = [
+        "mixed", "ambiguous", "uncertain", "inconclusive", "mixed signals", 
+        "fluctuating", "volatile", "conflicted", "both positive and negative", 
+        "unclear trend", "miixed", "mixxed", "ambigous", "fluctuating", "volitile", "unclear"
+    ]
+
+    # Helper function for substring matching with a list of variants
+    def match_sentiment(variants):
+        for variant in variants:
+            # Using regex for approximate matching
+            if re.search(rf"\b{variant}\b", sentiment):
+                return True
+        return False
+
+    # Match sentiment to closest category
+    if match_sentiment(positive_variants):
+        return "positive"
+    elif match_sentiment(negative_variants):
+        return "negative"
+    elif match_sentiment(neutral_variants):
+        return "neutral"
+    elif match_sentiment(mixed_variants):
+        return "mixed"
+    else:
+        # Default to "mixed" if sentiment is not recognized
+        return "mixed"
 
 # Define each agent function
 def mood_agent(content):
@@ -129,7 +181,7 @@ def reference_agent(content):
 def run_agent(prompt, content):
     try:
         response = client.chat.completions.create(
-            model="gpt-4-turbo",
+            model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": f"{prompt} {content}"}]
         )
         return response.choices[0].message.content
