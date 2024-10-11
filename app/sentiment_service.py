@@ -76,7 +76,7 @@ def refine_agent_responses(sentiment_summary, combined_responses):
             refined_response = client.chat.completions.create(
                 model="gpt-4-turbo",
                 messages=[
-                    {"role": "user", "content": f"Refine your sentiment analysis by reviewing these responses:\n{combined_responses}\nOriginal response: {response} \nPlease keep your analysis 'Concise'"}
+                    {"role": "user", "content": f"Refine your sentiment analysis by reviewing these responses:\n{combined_responses}\nOriginal response: {response} \n Please keep your analysis 'Concise'"}
                 ]
             )
             refined_summary[agent] = refined_response.choices[0].message.content
