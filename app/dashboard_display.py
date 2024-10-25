@@ -2,6 +2,9 @@
 
 import streamlit as st
 import pandas as pd
+
+import pytz
+
 def display_overall_section(final_sentiment, last_updated, sentiment_counts, text_data, sentiment_history, country="Hong Kong"):
     """Displays the main title, subtitle, and overall sentiment for a specific country with all parts in the right column."""
 
@@ -51,7 +54,7 @@ def display_overall_section(final_sentiment, last_updated, sentiment_counts, tex
             f"""
             <div class="sentiment-box">
                 <p>{final_sentiment}</p>
-                <small>Last updated: {last_updated.strftime("%Y-%m-%d %H:%M:%S")}</small>
+                <small>Last updated: {last_updated.strftime("%Y-%m-%d %H:%M:%S %Z%z")} HKT</small>
             </div>
             """,
             unsafe_allow_html=True

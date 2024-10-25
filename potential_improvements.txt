@@ -1,3 +1,15 @@
 1. Api data collection only for the past 1 hour
 2. Save the data to the DB for later historical trends and timeline
+3. Implement DB
 
+Feature 2 brainstorming
+1. Instead of making its own decision, AI should support decision making in the domain of Finance
+2. Sentiment on each stocks from institutional investors (analysts) and individuals investors
+3. List out 50 stocks from each country
+4. For each stock, analyze the sentiment of the market
+5. The REASON behind why the AI model made use of such methodology should be well stated.
+6. Based on the sentiments of each stock, and the general comments of the hong kong stock market should be both be considered to produce a sentiment output 
+
+Feature 3 brainstorming
+1. Need to be able to support numerous models
+2. Adopt scalability

@@ -6,6 +6,7 @@ venv/
 .env
 .ipynb_checkpoints/
 .Documentation History/
+.streamlit/
 secrets.toml
 
 

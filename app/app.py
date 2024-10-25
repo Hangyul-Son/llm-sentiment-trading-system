@@ -7,7 +7,7 @@ from dashboard_display import (
     display_detailed_analysis, display_historical_data
 )
 from data_handler import fetch_reddit_data, fetch_gdelt_data_with_ranking
-
+import pytz
 
 UPDATE_INTERVAL = timedelta(hours=1)
 last_updated = datetime.now() - UPDATE_INTERVAL  # Force initial load
@@ -55,6 +55,11 @@ def display_dashboard():
     if datetime.now() - last_updated >= UPDATE_INTERVAL:
         final_sentiment, sentiment_counts, text_data = get_sentiment_analysis()
         last_updated = datetime.now()
+
+        # Convert `last_updated` to Hong Kong timezone
+        hong_kong_timezone = pytz.timezone("Asia/Hong_Kong")
+        last_updated_hkt = last_updated.astimezone(hong_kong_timezone)
+
 
         # Display various dashboard sections with the updated layout
 # Example of calling display_overall_section in your main app file (app.py)
